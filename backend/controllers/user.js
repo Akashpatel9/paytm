@@ -108,6 +108,33 @@ export const signinHandler = async (req, res) => {
 }
 
 
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------------
+
+export const userDetailsHanlder = async (req, res) => {
+    try {
+
+        const userDetails = await userModel.findOne({ username: req.user.username });
+        const accoutDetails = await userAccountModel.findOne({user: userDetails._id});
+        res.status(200).json({
+            sucess:false,
+            message:"Sucessfully fatched UserDetails",
+            data:{
+                userDetails,
+                accoutDetails
+            }
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            sucess: false,
+            message: error.message
+        })
+    }
+}
+
+
 // ------------------------------------------------------------------------------------------------------------------------------------------
 
 export const updateDetailsHandler = async (req, res) => {
