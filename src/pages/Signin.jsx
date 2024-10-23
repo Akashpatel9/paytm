@@ -13,6 +13,8 @@ const Signin = () => {
 
   const {login} = useContext(AuthContext);
 
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -20,6 +22,7 @@ const Signin = () => {
 
   async function submiteHandler() {
     try {
+      setLoading(true);
       const {data} = await axios.post(
         "http://localhost:3000/api/v1/user/signin",
         formData
@@ -28,7 +31,9 @@ const Signin = () => {
       login(data.token);
     } catch (error) {
       toast.error(error.response.data.message);
-    }
+    }finally{
+      setLoading(false);
+    };
   }
 
   return (
@@ -58,8 +63,8 @@ const Signin = () => {
           value={formData.password}
         />
 
-        <Button>
-          <h1 onClick={submiteHandler}>Sign in</h1>
+        <Button loading={loading}>
+          <button disabled={loading} onClick={submiteHandler}>{loading?"Loading...":"Sign in"}</button>
         </Button>
 
         <BottomWarning warning={"Don't have an account?"} to={"Sign up"} />

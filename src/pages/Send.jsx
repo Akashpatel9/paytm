@@ -5,7 +5,6 @@ import { UserContext } from "../context/UserProvider";
 function Send() {
   const [amount, setAmount] = useState(0);
   const [recieverDetails, setRecieverDetails] = useState("");
-
   const { id } = useParams();
   const { sendmoney, users } = useContext(UserContext);
 
@@ -62,7 +61,6 @@ function Send() {
                     onChange={(e) => setAmount(e.target.value)}
                     autoFocus
                     min={1}
-                    value={amount}
                   />
                 </div>
                 <button

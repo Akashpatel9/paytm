@@ -1,19 +1,27 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext(null);
 
 function UserProvider({ children }) {
+  
   const [users, setUsers] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
-  
-  const { auth } = useContext(AuthContext);
 
+  const nevigate = useNavigate()
+
+
+  const { auth, logout } = useContext(AuthContext);
+
+
+  const token = localStorage.getItem("token");
+  
   const instance = axios.create({
     baseURL: "http://localhost:3000/api/v1/",
     headers: {  
-      authorization: `Bearer ${auth}`,
+      authorization: `Bearer ${token}`,
     },
   });
 
@@ -22,7 +30,7 @@ function UserProvider({ children }) {
       getUsers("");
       getUser();
     }
-  }, [auth]);
+  }, [auth, token]);
 
 
   const getUser = async () => {
@@ -30,6 +38,9 @@ function UserProvider({ children }) {
       const {data} = await instance.get("user/userDetails");
       setUserDetails(data.data)
     } catch (error) {
+      if(error.status == 401){
+        logout()
+      }
       console.log(error);
     }
   };
@@ -43,6 +54,9 @@ function UserProvider({ children }) {
         setUsers(res.data.data);
       });
     } catch (error) {
+      if(error.status == 401){
+        logout()
+      }
       console.log(error);
     }
   };
@@ -51,9 +65,12 @@ function UserProvider({ children }) {
   const sendmoney = async (data) => {
     try {
       const res = await instance.put("account/transaction", data);
-      console.log(res);
-      
+      nevigate('/dashboard')
+      getUser();
     } catch (error) {
+      if(error.status == 401){
+        logout()
+      }
       console.log(error);
     }
   };

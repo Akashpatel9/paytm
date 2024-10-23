@@ -6,8 +6,10 @@ import { UserContext } from "../context/UserProvider"
 
 
 const Dashboard = () => {
-
   const {userDetails} = useContext(UserContext);
+
+  
+  
   return userDetails&&(
     <div className="">
       <Appbar user={userDetails.userDetails}/>

@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 
 const Signup = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -19,6 +20,7 @@ const Signup = () => {
 
   async function submiteHandler() {
     try {
+      setLoading(true);
       const res = await axios.post(
         "http://localhost:3000/api/v1/user/signup",
         formData
@@ -26,7 +28,9 @@ const Signup = () => {
       toast.success(res.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
-    }
+    }finally{
+      setLoading(false);
+    };
   }
 
   return (
@@ -76,8 +80,8 @@ const Signup = () => {
           value={formData.password}
         />
 
-        <Button>
-          <h1 onClick={submiteHandler}>Sign up</h1>
+        <Button loading={loading}>
+          <button disabled={loading} onClick={submiteHandler}>{loading?"Loading...":"Sign up"}</button>
         </Button>
 
         <BottomWarning warning={"Already have an account?"} to={"Sign in"} />
